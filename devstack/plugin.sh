@@ -34,6 +34,11 @@ GLUSTERFS_LOOPBACK_DISK_SIZE=${GLUSTERFS_LOOPBACK_DISK_SIZE:-4G}
 
 CINDER_GLUSTERFS_SHARES=${CINDER_GLUSTERFS_SHARES:-"127.0.0.1:/vol1;127.0.0.1:/vol2"}
 
+# Adding GlusterFS repo to CentOS / RHEL 7 platform.
+
+GLUSTERFS_CENTOS_REPO=${GLUSTERFS_CENTOS_REPO:-"http://download.gluster.org/pub/gluster/glusterfs/LA
+TEST/CentOS/glusterfs-epel.repo"}
+
 # Functions
 # ------------
 
@@ -91,6 +96,9 @@ function configure_glusterfs_cinder {
 
 # install_glusterfs() - Collect source and prepare
 function install_glusterfs {
+    if [[ ${DISTRO} =~ rhel7 ]] && [[ ! -f /etc/yum.repos.d/glusterfs-epel.repo ]]; then
+        sudo  wget $GLUSTERFS_CENTOS_REPO -O /etc/yum.repos.d/glusterfs-epel.repo
+    fi
     install_package glusterfs-server
     install_package xfsprogs
 }
